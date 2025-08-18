@@ -1,64 +1,57 @@
 import streamlit as st
 import random
 
-# 페이지 설정 🌈
-st.set_page_config(page_title="MBTI 색깔 추천✨", page_icon="🎨", layout="wide")
-
-# 헤더 🎉
-st.markdown("""
-    <h1 style='text-align: center; color: #ff69b4;'>🌟 MBTI 기반 색깔 추천 사이트 🌟</h1>
-    <p style='text-align: center; font-size: 22px;'>💖 당신의 성격 유형에 딱 맞는 색깔과 그 이유를 알려드려요 🎨✨</p>
-""", unsafe_allow_html=True)
-
-st.markdown("""
-<div style='text-align:center; font-size:30px;'>
-🌈✨💫🌍🌟🔥🌸🍀🎶🎭🚀💼👑🎉🌻💎🎧🦄🌊
-</div>
-""", unsafe_allow_html=True)
-
-# MBTI 선택 🎭
-mbti = st.selectbox(
-    "👉 당신의 MBTI를 선택하세요:",
-    ["INTJ", "INTP", "ENTJ", "ENTP", "INFJ", "INFP", "ENFJ", "ENFP",
-     "ISTJ", "ISFJ", "ESTJ", "ESFJ", "ISTP", "ISFP", "ESTP", "ESFP"]
-)
-
-# MBTI별 색깔 추천 데이터 🎨 (색상 hex 코드 추가)
-color_recommendations = {
-    "INTJ": ("보라색 💜", "깊은 사고와 통찰력을 가진 INTJ에게는 신비롭고 창의적인 보라색이 어울립니다.", "#800080"),
-    "INTP": ("청록색 🌀", "지적 호기심과 탐구심이 강한 INTP는 차분하면서도 독창적인 청록색이 잘 맞습니다.", "#20B2AA"),
-    "ENTJ": ("빨강 ❤️", "강한 리더십과 추진력을 가진 ENTJ는 열정과 힘을 상징하는 빨강이 어울립니다.", "#FF0000"),
-    "ENTP": ("주황색 🧡", "도전적이고 에너지가 넘치는 ENTP는 활발하고 창의적인 주황색과 잘 맞습니다.", "#FF8C00"),
-    "INFJ": ("남색 💙", "깊은 공감 능력과 이상주의적인 INFJ는 차분하고 신뢰감을 주는 남색이 어울립니다.", "#000080"),
-    "INFP": ("연두색 💚", "순수하고 따뜻한 감성을 가진 INFP는 자연과 희망을 상징하는 연두색과 잘 어울립니다.", "#98FB98"),
-    "ENFJ": ("핑크색 🌸", "타인에게 따뜻하고 배려심이 깊은 ENFJ는 사랑과 조화를 상징하는 핑크색이 어울립니다.", "#FFC0CB"),
-    "ENFP": ("노랑 💛", "긍정적이고 자유로운 영혼인 ENFP는 밝고 에너지 넘치는 노랑과 잘 맞습니다.", "#FFD700"),
-    "ISTJ": ("회색 ⚪", "신뢰성과 책임감이 강한 ISTJ는 안정감과 질서를 상징하는 회색이 어울립니다.", "#A9A9A9"),
-    "ISFJ": ("하늘색 🌤️", "배려심 많고 따뜻한 ISFJ는 평화롭고 편안한 하늘색이 잘 맞습니다.", "#87CEEB"),
-    "ESTJ": ("남색 💙", "체계적이고 리더십이 강한 ESTJ는 신뢰와 권위를 주는 남색이 어울립니다.", "#00008B"),
-    "ESFJ": ("연분홍 🌷", "친절하고 사교적인 ESFJ는 부드럽고 따뜻한 연분홍색이 잘 맞습니다.", "#FFB6C1"),
-    "ISTP": ("검정 ⚫", "논리적이고 현실적인 ISTP는 차분하고 실용적인 검정색과 어울립니다.", "#000000"),
-    "ISFP": ("민트색 🍃", "감성적이고 예술적인 ISFP는 신선하고 자유로운 민트색이 잘 맞습니다.", "#3EB489"),
-    "ESTP": ("빨강 ❤️", "활발하고 모험심 강한 ESTP는 강렬하고 에너지 넘치는 빨강과 잘 어울립니다.", "#DC143C"),
-    "ESFP": ("무지개색 🌈", "사교적이고 즐거움을 추구하는 ESFP는 다채롭고 화려한 무지개색이 어울립니다.", "linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet)")
+# 한국 공휴일 데이터 (고정 공휴일 위주, 설날/추석 등 음력 기반은 예시로 일부 반영)
+HOLIDAYS = {
+    "01-01": ("신정", "🎉"),
+    "03-01": ("삼일절", "🇰🇷"),
+    "05-05": ("어린이날", "🧒"),
+    "06-06": ("현충일", "🪖"),
+    "08-15": ("광복절", "🇰🇷"),
+    "10-03": ("개천절", "🌌"),
+    "10-09": ("한글날", "🔤"),
+    "12-25": ("크리스마스", "🎄"),
 }
 
-# 선택한 MBTI 결과 출력 🌈
-if mbti:
-    color, reason, bg_color = color_recommendations[mbti]
+# 임시로 2025년 설날, 추석 등 추가 (예시)
+LUNAR_HOLIDAYS_2025 = {
+    "01-28": ("설날 연휴", "🥟"),
+    "01-29": ("설날", "🎊"),
+    "01-30": ("설날 연휴", "🥟"),
+    "10-05": ("추석 연휴", "🌕"),
+    "10-06": ("추석", "🍂"),
+    "10-07": ("추석 연휴", "🌕"),
+}
 
-    st.markdown(f"""
-        <div style='text-align: center; padding: 50px; border-radius: 25px; background: {bg_color}; box-shadow: 0 0 20px {bg_color}; color: white;'>
-            <h2>✨ 당신의 MBTI는 <span style='color:#fff'>{mbti}</span> ✨</h2>
-            <h3>🌟 어울리는 색깔: {color} 🌟</h3>
-            <p style='font-size:20px;'>{reason}</p>
-            <div style='font-size:35px;'>💎🌸🌈🔥🎶🦄🌍✨</div>
-        </div>
-    """, unsafe_allow_html=True)
+def get_holidays(year, month):
+    results = []
+    for date_str, (name, emoji) in HOLIDAYS.items():
+        m, d = map(int, date_str.split("-"))
+        if m == month:
+            results.append((datetime.date(year, m, d), name, emoji))
 
-# Footer 🎆
-st.markdown("""
-    <hr>
-    <p style='text-align: center; font-size:18px;'>Made with ❤️ by Streamlit & MBTI Colors World 🌍✨🎉</p>
-    <div style='text-align:center; font-size:26px;'>🌸💎🔥🌈🎶🌟💫💖🚀</div>
-""", unsafe_allow_html=True)
+    # 2025년 음력 공휴일
+    if year == 2025:
+        for date_str, (name, emoji) in LUNAR_HOLIDAYS_2025.items():
+            m, d = map(int, date_str.split("-"))
+            if m == month:
+                results.append((datetime.date(year, m, d), name, emoji))
+
+    results.sort(key=lambda x: x[0])
+    return results
+
+st.title("📅 한국 공휴일 조회기")
+st.write("연도와 월을 선택하면 해당 달의 공휴일을 확인할 수 있어요!")
+
+year = st.number_input("연도 입력", min_value=2000, max_value=2100, value=datetime.date.today().year)
+month = st.number_input("월 입력", min_value=1, max_value=12, value=datetime.date.today().month)
+
+if st.button("조회하기"):
+    holidays = get_holidays(year, month)
+    if holidays:
+        st.subheader(f"✅ {year}년 {month}월의 공휴일")
+        for date, name, emoji in holidays:
+            st.write(f"{date.strftime('%Y-%m-%d')} - {name} {emoji}")
+    else:
+        st.subheader("❌ 이 달에는 공휴일이 없어요.")
+        st.write("그래도 힘내세요! 당신의 하루가 작은 휴일처럼 빛나길 바랍니다 🌟")
