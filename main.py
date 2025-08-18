@@ -1,4 +1,5 @@
 import streamlit as st
+import random
 
 # 페이지 설정 🌈
 st.set_page_config(page_title="MBTI 진로 추천✨", page_icon="💫", layout="wide")
@@ -6,7 +7,13 @@ st.set_page_config(page_title="MBTI 진로 추천✨", page_icon="💫", layout=
 # 헤더 🎉
 st.markdown("""
     <h1 style='text-align: center; color: #ff69b4;'>🌟 MBTI 기반 진로 추천 사이트 🌟</h1>
-    <p style='text-align: center; font-size: 20px;'>당신의 성격 유형에 맞는 직업을 화려하게 추천해드려요 💼✨</p>
+    <p style='text-align: center; font-size: 22px;'>💖 당신의 성격 유형에 맞는 직업을 화려하게 추천해드려요 💼✨</p>
+""", unsafe_allow_html=True)
+
+st.markdown("""
+<div style='text-align:center; font-size:30px;'>
+🎨✨💫🌍🌈🌟🔥🌸🍀🎶🎭🚀💼👑🎉🌻💎🎧🦄🌊
+</div>
 """, unsafe_allow_html=True)
 
 # MBTI 선택 🎭
@@ -39,18 +46,25 @@ job_recommendations = {
 # 선택한 MBTI 결과 출력 🌈
 if mbti:
     st.markdown(f"""
-        <div style='text-align: center; padding: 20px; border-radius: 20px; background-color: #ffe4f2;'>
+        <div style='text-align: center; padding: 25px; border-radius: 25px; background-color: #fff0f5; box-shadow: 0 0 15px #ffb6c1;'>
             <h2>✨ 당신의 MBTI는 <span style='color:#ff1493'>{mbti}</span> ✨</h2>
             <h3>🌟 어울리는 직업 추천 리스트 🌟</h3>
+            <div style='font-size:35px;'>💎🌸🌈🔥🎶🦄🌍✨</div>
         </div>
     """, unsafe_allow_html=True)
 
     for job in job_recommendations[mbti]:
-        st.markdown(f"<h4 style='text-align: center;'>👉 {job}</h4>", unsafe_allow_html=True)
+        st.markdown(f"<h4 style='text-align: center; color:#8a2be2;'>👉 {job}</h4>", unsafe_allow_html=True)
+
+    st.markdown("""
+    <div style='text-align:center; font-size:28px; padding:15px;'>
+    🎉💼🌈🌟💖🚀✨🎶🍀🌸🔥🎭🌍💎
+    </div>
+    """, unsafe_allow_html=True)
 
 # Footer 🎆
 st.markdown("""
     <hr>
-    <p style='text-align: center;'>Made with ❤️ by Streamlit & MBTI World 🌍</p>
+    <p style='text-align: center; font-size:18px;'>Made with ❤️ by Streamlit & MBTI World 🌍✨🎉</p>
+    <div style='text-align:center; font-size:26px;'>🌸💎🔥🌈🎶🌟💫💖🚀</div>
 """, unsafe_allow_html=True)
-
