@@ -1,5 +1,5 @@
 import streamlit as st
-import random
+import datetime
 
 # 한국 공휴일 데이터 (고정 공휴일 위주, 설날/추석 등 음력 기반은 예시로 일부 반영)
 HOLIDAYS = {
