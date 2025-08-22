@@ -1,2 +1,2 @@
 import streamlit as st
-st.title('엔하이픈화이팅')
+st.title('김건우데뷔해라')
