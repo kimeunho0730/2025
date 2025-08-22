@@ -1,6 +1,4 @@
 import streamlit as st
-import pandas as pd
-import matplotlib.pyplot as plt
 
 # 1번 ~ 20번 원소 데이터 (간단 버전)
 elements = [
