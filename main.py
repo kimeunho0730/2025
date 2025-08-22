@@ -24,34 +24,29 @@ elements = [
     {"Z": 20, "symbol": "Ca", "period": 4, "radius": 194, "electronegativity": 1.00, "config": "[Ar] 4s2"},
 ]
 
-# DataFrame 변환
-df = pd.DataFrame(elements)
-
 st.set_page_config(page_title="주기율표 경향", layout="centered")
 st.title("📊 주기율표 주기적 성질 변화 (1주기 ~ 4주기, Z=1~20)")
 
 # 원자 반지름 변화
+data_radius = {"Z": [], "radius": []}
+for elem in elements:
+    data_radius["Z"].append(elem["Z"])
+    data_radius["radius"].append(elem["radius"])
+
 st.subheader("원자 반지름 (pm) 변화")
-fig1, ax1 = plt.subplots()
-for p in range(1, 5):
-    sub = df[df["period"] == p]
-    ax1.plot(sub["Z"], sub["radius"], marker="o", label=f"{p}주기")
-ax1.set_xlabel("원자번호 (Z)")
-ax1.set_ylabel("원자 반지름 (pm)")
-ax1.legend()
-st.pyplot(fig1)
+st.line_chart(data_radius, x="Z", y="radius")
 
 # 전기음성도 변화
-st.subheader("전기음성도 (Pauling) 변화")
-fig2, ax2 = plt.subplots()
-for p in range(1, 5):
-    sub = df[df["period"] == p]
-    ax2.plot(sub["Z"], sub["electronegativity"], marker="s", label=f"{p}주기")
-ax2.set_xlabel("원자번호 (Z)")
-ax2.set_ylabel("전기음성도 (Pauling)")
-ax2.legend()
-st.pyplot(fig2)
+data_en = {"Z": [], "electronegativity": []}
+for elem in elements:
+    data_en["Z"].append(elem["Z"])
+    data_en["electronegativity"].append(elem["electronegativity"] if elem["electronegativity"] is not None else None)
 
-# 전자 배치 테이블
+st.subheader("전기음성도 (Pauling) 변화")
+st.line_chart(data_en, x="Z", y="electronegativity")
+
+# 전자 배치 테이블 표시
+table_data = [[elem["Z"], elem["symbol"], elem["period"], elem["config"]] for elem in elements]
+
 st.subheader("전자 배치 변화")
-st.dataframe(df[["Z", "symbol", "period", "config"]])
+st.table(table_data)
