@@ -1,52 +1,71 @@
 import streamlit as st
 
-# 1번 ~ 20번 원소 데이터 (간단 버전)
-elements = [
-    {"Z": 1, "symbol": "H", "period": 1, "radius": 53,  "electronegativity": 2.20, "config": "1s1"},
-    {"Z": 2, "symbol": "He", "period": 1, "radius": 31,  "electronegativity": None, "config": "1s2"},
-    {"Z": 3, "symbol": "Li", "period": 2, "radius": 167, "electronegativity": 0.98, "config": "[He] 2s1"},
-    {"Z": 4, "symbol": "Be", "period": 2, "radius": 112, "electronegativity": 1.57, "config": "[He] 2s2"},
-    {"Z": 5, "symbol": "B", "period": 2, "radius": 87,  "electronegativity": 2.04, "config": "[He] 2s2 2p1"},
-    {"Z": 6, "symbol": "C", "period": 2, "radius": 67,  "electronegativity": 2.55, "config": "[He] 2s2 2p2"},
-    {"Z": 7, "symbol": "N", "period": 2, "radius": 56,  "electronegativity": 3.04, "config": "[He] 2s2 2p3"},
-    {"Z": 8, "symbol": "O", "period": 2, "radius": 48,  "electronegativity": 3.44, "config": "[He] 2s2 2p4"},
-    {"Z": 9, "symbol": "F", "period": 2, "radius": 42,  "electronegativity": 3.98, "config": "[He] 2s2 2p5"},
-    {"Z": 10, "symbol": "Ne", "period": 2, "radius": 38, "electronegativity": None, "config": "[He] 2s2 2p6"},
-    {"Z": 11, "symbol": "Na", "period": 3, "radius": 190, "electronegativity": 0.93, "config": "[Ne] 3s1"},
-    {"Z": 12, "symbol": "Mg", "period": 3, "radius": 145, "electronegativity": 1.31, "config": "[Ne] 3s2"},
-    {"Z": 13, "symbol": "Al", "period": 3, "radius": 118, "electronegativity": 1.61, "config": "[Ne] 3s2 3p1"},
-    {"Z": 14, "symbol": "Si", "period": 3, "radius": 111, "electronegativity": 1.90, "config": "[Ne] 3s2 3p2"},
-    {"Z": 15, "symbol": "P", "period": 3, "radius": 98,  "electronegativity": 2.19, "config": "[Ne] 3s2 3p3"},
-    {"Z": 16, "symbol": "S", "period": 3, "radius": 88,  "electronegativity": 2.58, "config": "[Ne] 3s2 3p4"},
-    {"Z": 17, "symbol": "Cl", "period": 3, "radius": 79,  "electronegativity": 3.16, "config": "[Ne] 3s2 3p5"},
-    {"Z": 18, "symbol": "Ar", "period": 3, "radius": 71,  "electronegativity": None, "config": "[Ne] 3s2 3p6"},
-    {"Z": 19, "symbol": "K", "period": 4, "radius": 243, "electronegativity": 0.82, "config": "[Ar] 4s1"},
-    {"Z": 20, "symbol": "Ca", "period": 4, "radius": 194, "electronegativity": 1.00, "config": "[Ar] 4s2"},
-]
+# -------------------------------
+# 메인 제목
+# -------------------------------
+st.set_page_config(page_title="신경·호르몬 조절 시뮬레이터", page_icon="🧠", layout="centered")
 
-st.set_page_config(page_title="주기율표 경향", layout="centered")
-st.title("📊 주기율표 주기적 성질 변화 (1주기 ~ 4주기, Z=1~20)")
+st.title("🧠 신경·호르몬 조절 시뮬레이터")
+st.write("생명과학Ⅰ - 항상성과 조절 단원 학습용 웹사이트")
+st.divider()
 
-# 원자 반지름 변화
-data_radius = {"Z": [], "radius": []}
-for elem in elements:
-    data_radius["Z"].append(elem["Z"])
-    data_radius["radius"].append(elem["radius"])
+# -------------------------------
+# 상황 선택
+# -------------------------------
+st.subheader("1️⃣ 상황을 선택하세요")
+scenario = st.selectbox(
+    "다음 중 한 가지 상황을 선택해보세요:",
+    ["🍰 단 음식 섭취 후", "🏃 운동 직후", "❄️ 추운 환경", "💧 물을 많이 마신 후"]
+)
 
-st.subheader("원자 반지름 (pm) 변화")
-st.line_chart(data_radius, x="Z", y="radius")
+# -------------------------------
+# 반응 시뮬레이션
+# -------------------------------
+st.subheader("2️⃣ 우리 몸의 반응")
 
-# 전기음성도 변화
-data_en = {"Z": [], "electronegativity": []}
-for elem in elements:
-    data_en["Z"].append(elem["Z"])
-    data_en["electronegativity"].append(elem["electronegativity"] if elem["electronegativity"] is not None else None)
+if scenario == "🍰 단 음식 섭취 후":
+    st.write("**혈당이 상승했습니다.**")
+    st.progress(90, text="혈당 수치 ↑")
+    st.markdown("- 췌장 **β세포** → 인슐린 분비 증가 🟢")
+    st.markdown("- 간 → 글리코젠 합성 ⬆️")
+    st.markdown("- 결과: 혈당이 정상으로 조절 ✅")
 
-st.subheader("전기음성도 (Pauling) 변화")
-st.line_chart(data_en, x="Z", y="electronegativity")
+elif scenario == "🏃 운동 직후":
+    st.write("**혈당이 낮아지고, 체온은 올라갔습니다.**")
+    st.progress(20, text="혈당 수치 ↓")
+    st.markdown("- 췌장 **α세포** → 글루카곤 분비 증가 🟠")
+    st.markdown("- 간 → 글리코젠 분해 → 포도당 방출 ⬆️")
+    st.markdown("- 체온 조절 → 땀 분비 증가, 혈관 확장")
+    st.markdown("- 결과: 혈당과 체온이 정상으로 회복 ✅")
 
-# 전자 배치 테이블 표시
-table_data = [[elem["Z"], elem["symbol"], elem["period"], elem["config"]] for elem in elements]
+elif scenario == "❄️ 추운 환경":
+    st.write("**체온이 낮아졌습니다.**")
+    st.progress(30, text="체온 ↓")
+    st.markdown("- 시상하부 감지 → 체온 유지 신호 발동 🔵")
+    st.markdown("- 혈관 수축, 근육 떨림, 대사량 증가")
+    st.markdown("- 결과: 체온이 정상으로 회복 ✅")
 
-st.subheader("전자 배치 변화")
-st.table(table_data)
+elif scenario == "💧 물을 많이 마신 후":
+    st.write("**혈액의 삼투압이 낮아졌습니다.**")
+    st.progress(40, text="삼투압 ↓")
+    st.markdown("- 뇌하수체 후엽 → ADH(항이뇨호르몬) 분비 감소 🧊")
+    st.markdown("- 콩팥에서 물 재흡수 감소 → 소변량 증가")
+    st.markdown("- 결과: 삼투압이 정상으로 회복 ✅")
+
+st.divider()
+
+# -------------------------------
+# 퀴즈
+# -------------------------------
+st.subheader("3️⃣ 개념 확인 퀴즈")
+
+quiz_q = st.radio(
+    "혈당이 낮아졌을 때 분비되는 호르몬은 무엇일까요?",
+    ["인슐린", "글루카곤", "ADH", "에피네프린"]
+)
+
+if quiz_q:
+    if quiz_q == "글루카곤":
+        st.success("✅ 정답! 혈당이 낮을 때 글루카곤이 분비됩니다.")
+    else:
+        st.error("❌ 다시 생각해보세요. 혈당이 낮을 때는 글루카곤이 필요합니다.")
