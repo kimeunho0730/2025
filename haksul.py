@@ -3,10 +3,14 @@
 # 실제(달력) 나이와 비교하여 개선점과 권장사항을 제시하는 교육용 시연용 앱입니다.
 # 주의: 이 앱은 교육적・시연적 목적의 추정 모델을 제공합니다. 의료적 진단/치료를 대체하지 않습니다.
 
+# streamlit_biological_age_app.py
+# 설명: 사용자가 입력한 생활습관/환경 정보를 바탕으로 '생물학적 나이'를 추정하고,
+# 실제(달력) 나이와 비교하여 개선점과 권장사항을 제시하는 교육용 시연용 앱입니다.
+# 주의: 이 앱은 교육적·시연적 목적의 추정 모델을 제공합니다. 의료적 진단/치료를 대체하지 않습니다.
+
 import streamlit as st
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
 from datetime import datetime
 
 st.set_page_config(page_title="생물학적 나이 추정기", layout="centered")
@@ -83,7 +87,6 @@ def compute_biological_age(age, height_cm, weight_kg, smoking, alcohol, exercise
         contributions['운동'] = 2.0
 
     # 4) 식습관 (점수 중심)
-    # 평균 점수(중간)를 5.5로 보고 차이에 비례한 가감 (음수면 젊게)
     contributions['식습관'] = (5.5 - float(diet_score)) * 0.5
 
     # 5) 수면
@@ -183,15 +186,16 @@ def generate_simulated_cohort(base_age, n=500, seed=42):
 
 sim_cohort = generate_simulated_cohort(age, n=500)
 
-# 시각화: 히스토그램 + 사용자의 위치
-fig, ax = plt.subplots()
-ax.hist(sim_cohort, bins=30)
-ax.axvline(result['biological_age'], linestyle='--', linewidth=2, label='당신(생물학적 나이)')
-ax.axvline(age, color='gray', linestyle=':', linewidth=1, label='당신(실제 나이)')
-ax.set_xlabel('생물학적 나이(시뮬레이션)')
-ax.set_ylabel('빈도')
-ax.legend()
-st.pyplot(fig)
+# Matplotlib 의존을 제거: 히스토그램을 numpy로 계산한 뒤 Streamlit의 bar_chart로 표시
+hist, bin_edges = np.histogram(sim_cohort, bins=30)
+bin_centers = (bin_edges[:-1] + bin_edges[1:]) / 2
+hist_df = pd.DataFrame({'bin_center': bin_centers, 'count': hist})
+hist_df = hist_df.set_index('bin_center')
+
+st.markdown('시뮬레이션된 동일 연령대 분포(히스토그램):')
+st.bar_chart(hist_df['count'])
+
+st.markdown(f"- 당신(생물학적 나이): **{result['biological_age']}세**\n- 당신(실제 나이): **{age}세**")
 
 # 통계적 지표: 백분위수
 percentile = float(np.mean(sim_cohort <= result['biological_age']) * 100)
@@ -227,7 +231,7 @@ for k, v in sorted_contribs:
     elif k == '대기오염':
         recommendations.append((k, v, '대기오염 노출시 실내 공기질 관리(공기청정기, 외출 시 마스크)와 통근 경로·시간 조정 등을 고려하세요.'))
     elif k == '사회경제적지위':
-        recommendations.append((k, v, '사회경제적 요인은 건강에 영향을 미칩니다. 지역사회 자원(보건소, 커뮤니티 서비스)을 활용하세요.'))
+        recommendations.append((k, v, '사회경제적 요인은 건강에 영향을 미칩니다.지역사회 자원(보건소, 커뮤니티 서비스)을 활용하세요.'))
 
 if len(recommendations) == 0:
     st.success('현재 입력값 기준으로 특별히 크게 문제되는 항목이 보이지 않습니다. 현재 생활습관을 계속 유지하고 정기 검진을 권장합니다.')
